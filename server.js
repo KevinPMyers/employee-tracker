@@ -63,7 +63,7 @@ function viewRole(){
 
         init()
     })
-}
+};
 
 function viewEmployees(){
     const sqlStringEmp = `
@@ -77,8 +77,8 @@ function viewEmployees(){
         console.log("\n")
 
         init()
-    })
-}
+    });
+};
 
 function addDept() {
     inquirer.prompt([
@@ -96,13 +96,13 @@ function addDept() {
             console.log("added department");
             init()
         })
-    })
-}
+    });
+};
 
 function addRole() {
     inquirer.prompt([
         {
-            name: "roleTitle",
+            name: "Title",
             message: "What is the name of the new Role?",
             type: "input"
         },
@@ -115,14 +115,14 @@ function addRole() {
             name: "department",
             type: "list",
             message: "Department: ",
-            // choices: create dept array choices
+            choices: ["Sales", "Legal", "I.T.", "Accounting"]
         }
     ]).then(({roleName}) => {
         const sqlString = `
-        INSERT INTO role(role)
-        VALUES (?, ?, ?)`
+        INSERT INTO role (title, salary, department_id)
+        VALUES (?, ?, ?)`;
 
-        config.query(sqlString, [title, salary, department_id], err => {
+        config.query(sqlString, [roleName], err => {
             if(err) throw err;
             console.log("added new role");
             init()
