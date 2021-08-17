@@ -1,5 +1,7 @@
-const config = require('./config/connection');
+const config = require('./db/connection');
 const inquirer = require("inquirer");
+const cTable = require('console.table');
+
 
 config.connect(function (err) {
     if(err) throw err;
@@ -99,11 +101,12 @@ function addDept() {
     });
 };
 
+
 function addRole() {
     inquirer.prompt([
         {
-            name: "Title",
-            message: "What is the name of the new Role?",
+            name: "title",
+            message: "What is the title of the new Role?",
             type: "input"
         },
         {
@@ -112,24 +115,41 @@ function addRole() {
             type: "number"
         },
         {
-            name: "department",
-            type: "list",
-            message: "Department: ",
-            choices: ["Sales", "Legal", "I.T.", "Accounting"]
+            name: "department_id",
+            type: "input",
+            message: "Department ID: ",
+            
         }
-    ]).then(({roleName}) => {
-        const sqlString = `
-        INSERT INTO role (title, salary, department_id)
-        VALUES (?, ?, ?)`;
-
-        config.query(sqlString, [roleName], err => {
-            if(err) throw err;
-            console.log("added new role");
+    ]).then(data => {
+        config.query('INSERT INTO role SET?', {title: data.title, salary: data.salary, department_id: data.department_id}, (err, res) => {
+            if (err) throw (err);
+            console.log("New Role Added!")
             init()
         })
     })
 }
 
+function addEmployee() {
+    inquirer.prompt([
+        {
+            name: 'firstname',
+            type: 'input',
+            message: 'Enter employee first name: '
+        },
+        {
+            name: 'lastname',
+            type: 'input',
+            message: 'Enter employee last name: '
+        },
+        // {
+        //     name: 'employeeManager',
+        //     type:
+        // }
+    ])
+}
+
+// db.connect();
+// init();
 
 
 
