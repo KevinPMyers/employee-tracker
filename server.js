@@ -128,26 +128,30 @@ function addRole() {
         })
     })
 }
-
+// create function to find all employees
 function addEmployee() {
-    inquirer.prompt([
-        {
-            name: 'firstname',
-            type: 'input',
-            message: 'Enter employee first name: '
-        },
-        {
-            name: 'lastname',
-            type: 'input',
-            message: 'Enter employee last name: '
-        },
-        // {
-        //     name: 'employeeManager',
-        //     type:
-        // }
-    ])
-}
+    config.query('SELECT * FROM employee', (err, data) => {
+        console.log(data);
+        inquirer.prompt([
+            {
+                name: 'firstname',
+                type: 'input',
+                message: 'Enter employee first name: '
+            },
+            {
+                name: 'lastname',
+                type: 'input',
+                message: 'Enter employee last name: '
+            },
+            // {
+            //     name: 'employeeManager',
+            //     type: asrhadhgaharhg
+            // }
+        ])
+    })
 
+}
+addEmployee();
 // db.connect();
 // init();
 
