@@ -205,29 +205,20 @@ function addEmployee() {
         });
     });
 }
-// create array and function to return current employees with roles by joining tables
-
-    
-
 
 
 function updateEmployee() {
-    config.query("SELECT employee.first_name, employee.last_name, role.title FROM employee JOIN role ON employee.role_id = role.id;", function(err, res) {
+    config.query("SELECT employee.id, employee.first_name, employee.last_name, role.title FROM employee JOIN role ON employee.role_id = role.id;", function(err, res) {
     
      if (err) throw err
      console.log(res)
+        const values = res.map((emp) => ({[`${emp.first_name} ${emp.last_name}`]: emp.id}))
     inquirer.prompt([
           {
-            name: "lastName",
+            name: "name",
             type: "rawlist",
             message: "What is the Employee's last name? ",
-            choices: function() {
-              var lastNameArr = [];
-              for (var i = 0; i < res.length; i++) {
-                lastNameArr.push(res[i].last_name);
-              }
-              return lastNameArr;
-            }
+            choices: values.map(v => Object.keys(v)[0])
           },
           {
             name: "roleId",
@@ -237,13 +228,10 @@ function updateEmployee() {
           },
       ]).then(function(val) {
         var roleId = selectRole().indexOf(val.roleId) + 1
-        config.query("UPDATE employee SET WHERE ?", 
-        {
-          last_name: val.lastName,
-        }, 
-        {
-          role_id: roleId
-        }, 
+        const id = values.find(v => v[val.name])[val.name]
+        console.log(roleId, id)
+        config.query(`UPDATE employee SET role_id = ${roleId} WHERE id = ${id}`, 
+         
         function(err){
             if (err) throw err
             console.table(val)
