@@ -18,5 +18,8 @@ the application to work. Once that is finished, simply type "node server.js" and
 ![Schema](/assets/Schema.png)
 ![Role Function](/assets/RoleFunction.png)
 
+## Video Tutorial
+<iframe src="https://drive.google.com/file/d/1tfWv523XIih024xOajDf7yz59mb57S4G/preview" width="640" height="480"></iframe>
+
 ## Created By
 Kevin Myers
