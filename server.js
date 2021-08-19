@@ -29,6 +29,10 @@ function init(){
             addDept()
         }else if(choice == "Add Role"){
             addRole()
+        } else if(choice == "Add Employee"){
+            addEmployee()
+        } else if(choice == "Update Employee"){
+            updateEmployee()
         }
         else{
             console.log("Bye Felicia")
@@ -103,6 +107,7 @@ function addDept() {
 
 
 function addRole() {
+    config.query('SELECT role.title AS title, role.salary AS salary, role.department_id AS department_id FROM role', function (err, res) {
     inquirer.prompt([
         {
             name: "title",
@@ -120,39 +125,137 @@ function addRole() {
             message: "Department ID: ",
             
         }
-    ]).then(data => {
-        config.query('INSERT INTO role SET?', {title: data.title, salary: data.salary, department_id: data.department_id}, (err, res) => {
-            if (err) throw (err);
-            console.log("New Role Added!")
+    ]).then(function(res) {
+        config.query(
+            'INSERT INTO role SET ?',
+            {
+                title: res.title,
+                salary: res.salary,
+                department_id: res.department_id
+            },
+            function(err) {
+                if (err) throw err
+                console.table(res);
+                init()
+            }
+        )
+    })
+});
+}
+
+// create function to find all employees and roles
+var roleArr = [];
+function selectRole() {
+    config.query('SELECT * FROM role', function(err, res) {
+        if (err) throw err
+        for (i = 0;i < res.length; i++) {
+            roleArr.push(res[i].title);
+        }
+    })
+    return roleArr;
+}
+
+var managersArr = [];
+function selectManager() {
+    config.query('SELECT first_name, last_name FROM employee WHERE manager_id IS NOT NULL', function(err, res) {
+        if (err) throw err
+        for (i = 0; i < res.length; i++) {
+            managersArr.push(res[i].first_name);
+        }
+    })
+    return managersArr;
+}
+function addEmployee() {
+    inquirer.prompt([
+        {
+            name: 'firstName',
+            type: 'input',
+            message: 'Enter their first name: '
+        },
+        {
+            name: 'lastName',
+            type: 'input',
+            message: 'Enter their last name: '
+        },
+        {
+            name: 'roleId',
+            type: 'list',
+            message: "What is their role? ",
+            choices: selectRole()
+        },
+        {
+            name: 'manager',
+            type: 'rawlist',
+            message: "Who is their manager? ",
+            choices: selectManager()
+        }
+    ]).then(function (val) {
+        var roleId = selectRole().indexOf(val.roleId) + 1
+        var managerId = selectManager().indexOf(val.manager) + 1
+        config.query("INSERT INTO employee SET ?",
+        {
+            first_name: val.firstName,
+            last_name: val.lastName,
+            manager_id: managerId,
+            role_id: roleId
+        }, function(err){
+            if (err) throw err
+            console.table(val)
+            init()
+        });
+    });
+}
+// create array and function to return current employees with roles by joining tables
+
+    
+
+
+
+function updateEmployee() {
+    config.query("SELECT employee.first_name, employee.last_name, role.title FROM employee JOIN role ON employee.role_id = role.id;", function(err, res) {
+    
+     if (err) throw err
+     console.log(res)
+    inquirer.prompt([
+          {
+            name: "lastName",
+            type: "rawlist",
+            message: "What is the Employee's last name? ",
+            choices: function() {
+              var lastNameArr = [];
+              for (var i = 0; i < res.length; i++) {
+                lastNameArr.push(res[i].last_name);
+              }
+              return lastNameArr;
+            }
+          },
+          {
+            name: "roleId",
+            type: "rawlist",
+            message: "What is the Employees new title? ",
+            choices: selectRole()
+          },
+      ]).then(function(val) {
+        var roleId = selectRole().indexOf(val.roleId) + 1
+        config.query("UPDATE employee SET WHERE ?", 
+        {
+          last_name: val.lastName,
+        }, 
+        {
+          role_id: roleId
+        }, 
+        function(err){
+            if (err) throw err
+            console.table(val)
             init()
         })
-    })
-}
-// create function to find all employees
-function addEmployee() {
-    config.query('SELECT * FROM employee', (err, data) => {
-        console.log(data);
-        inquirer.prompt([
-            {
-                name: 'firstname',
-                type: 'input',
-                message: 'Enter employee first name: '
-            },
-            {
-                name: 'lastname',
-                type: 'input',
-                message: 'Enter employee last name: '
-            },
-            // {
-            //     name: 'employeeManager',
-            //     type: asrhadhgaharhg
-            // }
-        ])
-    })
+  
+    });
+  });
 
-}
-addEmployee();
-// db.connect();
+  }
+
+
 // init();
 
 

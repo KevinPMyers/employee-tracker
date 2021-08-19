@@ -16,8 +16,8 @@ VALUES
 ("Lead Sales", 120000, 1),
 ("IP Attorney", 100000, 2),
 ("Chief Counsel", 175000, 2),
-("CTO", 200000, 3),
 ("Systems Designer", 125000, 3),
+("CTO", 200000, 3),
 ("Web Development Manager", 120000, 3),
 ("Accounting Manager", 90000, 4),
 ("CPA", 80000, 4);
@@ -30,6 +30,8 @@ VALUES
 ("Frank", "Doe", 1, 2),
 ("Tommy", "Boy", null, 3),
 ("Richard", "Gallager", 3, 4),
+("Ella", "Fitzgerald", null, 5),
+("Jeremy", "Hank", 5, 6),
 ("Ron", "Swanson", null, 9),
 ("April", "O'Neil", 5, 8);
 
